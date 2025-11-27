@@ -327,6 +327,9 @@ def show_main_app():
         # Pakai container putih transparan biar konten kebaca jelas
         with st.container(border=True):
             if menu == "Diagnosis (User)":
+                # --- LOGIKA BANNER BARU (ANTI GAGAL & CSS INJECT) ---
+                
+                # 1. Coba ambil gambar lokal (base64)
                 img_base64 = get_img_as_base64(pilihan_kasus)
                 
                 # 2. Tentukan Sumber Gambar
@@ -394,8 +397,6 @@ def show_main_app():
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
-                else:
-                    st.title(f"Diagnosis: {pilihan_kasus}")
 
                 st.subheader("📝 Observasi Gejala")
                 opsi_tampilan = [f"{row['nama_gejala']} ({row['id_gejala']})" for i, row in df_gejala.iterrows()]
