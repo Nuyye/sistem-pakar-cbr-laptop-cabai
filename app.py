@@ -10,26 +10,59 @@ st.set_page_config(
     page_title="Expert System - Ultimate AI",
     page_icon="🧠",
     layout="wide",
-    initial_sidebar_state="collapsed" # Sidebar sembunyi dulu di awal
+    initial_sidebar_state="collapsed"
 )
 
-# --- BASE DIR & CSS ---
+# --- BASE DIR & CSS GLOBAL ---
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-def load_css(file_name):
-    css_path = os.path.join(BASE_DIR, "styles", file_name)
-    try:
-        with open(css_path) as f:
-            st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-    except FileNotFoundError:
-        pass
-
-load_css("main.css")
-
-# --- CSS TAMBAHAN KHUSUS LANDING PAGE ---
+# KITA GABUNG CSS DI SINI BIAR RAPI
 st.markdown("""
 <style>
-    /* Animasi Judul */
+    /* =========================================
+       1. CSS UNTUK BACKGROUND GAMBAR SAMAR
+    ========================================= */
+    /* Target container utama Streamlit */
+    .stApp {
+        /* Pastikan posisi relatif */
+        position: relative;
+    }
+
+    /* Membuat lapisan "palsu" di belakang layar (pseudo-element) */
+    .stApp::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        
+        /* --- GANTI URL GAMBAR DI SINI --- */
+        /* Saya pakai contoh gambar sirkuit dari Unsplash */
+        background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+        /* -------------------------------- */
+
+        background-size: cover;      /* Gambar menutupi seluruh layar */
+        background-position: center; /* Gambar di tengah */
+        background-repeat: no-repeat;
+        background-attachment: fixed; /* Gambar diam saat di-scroll (opsional) */
+
+        /* --- ATUR TINGKAT KESAMARAN (OPACITY) DI SINI --- */
+        /* Nilai 0.0 (hilang) sampai 1.0 (jelas banget) */
+        opacity: 0.10; 
+        /* ----------------------------------------------- */
+
+        /* Taruh di paling belakang agar tidak menutupi konten */
+        z-index: -1;
+        /* Agar klik tembus ke belakang */
+        pointer-events: none;
+        /* Filter tambahan biar agak gelap/blur (opsional) */
+        filter: grayscale(100%) contrast(120%);
+    }
+
+    /* =========================================
+       2. CSS UNTUK LANDING PAGE
+    ========================================= */
     .big-font {
         font-size: 60px !important;
         font-weight: 800;
@@ -38,30 +71,20 @@ st.markdown("""
         -webkit-text-fill-color: transparent;
         text-align: center;
         margin-bottom: 0px;
+        /* Tambah shadow biar teks tetap terbaca di atas background */
+        text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
     }
     .sub-font {
         font-size: 20px !important;
         text-align: center;
-        color: #666;
+        color: #444; /* Warna agak digelapin dikit */
         margin-bottom: 50px;
-    }
-    /* Kartu Pilihan */
-    .card {
-        background-color: #f9f9f9;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        text-align: center;
-        transition: transform 0.3s;
-        border: 1px solid #ddd;
-    }
-    .card:hover {
-        transform: scale(1.05);
-        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-        border: 1px solid #ff4b4b;
+        font-weight: 500;
     }
 </style>
 """, unsafe_allow_html=True)
+
+# (Fungsi load_css file eksternal dihapus karena sudah digabung di atas biar praktis)
 
 # --- HELPER FUNCTIONS ---
 def get_img_as_base64(kasus_type):
@@ -174,46 +197,38 @@ def catat_riwayat(kasus_type, gejala_input, hasil_diagnosa, skor):
     except: pass
 
 # =========================================================
-# HALAMAN 1: LANDING PAGE (SELAMAT DATANG)
+# HALAMAN 1: LANDING PAGE
 # =========================================================
 def show_landing_page():
-    # Spacer
     st.write("")
     st.write("")
-    
-    # Judul Keren
     st.markdown('<p class="big-font">SISTEM PAKAR CERDAS</p>', unsafe_allow_html=True)
     st.markdown('<p class="sub-font">Diagnosis Kerusakan Hardware & Penyakit Tanaman dengan Metode CBR + Active Learning</p>', unsafe_allow_html=True)
     
     st.write("---")
-    
-    # Pilihan Menu Card Style
     col1, col2, col3 = st.columns([1, 2, 1])
-    
     with col2:
-        st.info("👋 Selamat Datang! Silakan pilih modul diagnosis untuk memulai.")
-        
-        # Tombol Besar
-        if st.button("🚀 MULAI APLIKASI", type="primary", use_container_width=True):
-            st.session_state['page'] = 'app'
-            st.rerun()
+        # Pakai container biar teks di dalamnya lebih jelas di atas background
+        with st.container(border=True):
+            st.info("👋 Selamat Datang! Silakan mulai aplikasi untuk melakukan diagnosis.")
+            if st.button("🚀 MULAI APLIKASI", type="primary", use_container_width=True):
+                st.session_state['page'] = 'app'
+                st.rerun()
             
-    # Footer Landing
     st.markdown("<br><br><br><br>", unsafe_allow_html=True)
+    # Footer dikasih background tipis biar kebaca
     st.markdown("""
-    <div style="text-align: center; color: #aaa; font-size: 12px;">
+    <div style="text-align: center; color: #666; font-size: 12px; background-color: rgba(255,255,255,0.7); padding: 10px; border-radius: 5px;">
     &copy; 2025 Mahasiswa IT - Tugas Besar Machine Learning<br>
     Developed with ❤️ using Python & Streamlit
     </div>
     """, unsafe_allow_html=True)
 
 # =========================================================
-# HALAMAN 2: APLIKASI UTAMA (YANG KITA BIKIN KEMARIN)
+# HALAMAN 2: APLIKASI UTAMA
 # =========================================================
 def show_main_app():
-    # --- SIDEBAR CONTROL ---
     with st.sidebar:
-        # Tombol Balik ke Home
         if st.button("🏠 Kembali ke Home"):
             st.session_state['page'] = 'landing'
             st.rerun()
@@ -244,124 +259,122 @@ def show_main_app():
             else:
                 st.warning("Menu terkunci.")
 
-    # --- KONTEN UTAMA ---
     if df_gejala is not None:
-        
-        # === FITUR DIAGNOSIS ===
-        if menu == "Diagnosis (User)":
-            img_base64 = get_img_as_base64(pilihan_kasus)
-            if img_base64:
-                st.markdown(f"""
-                <div class="banner-container">
-                    <img src="data:image/jpg;base64,{img_base64}" class="banner-image">
-                    <div class="banner-overlay">
-                        <div>
-                            <div class="banner-text">Diagnosis: {pilihan_kasus}</div>
-                            <div class="banner-subtext">AI Expert System with Active Learning</div>
+        # Pakai container putih transparan biar konten kebaca jelas
+        with st.container(border=True):
+            if menu == "Diagnosis (User)":
+                img_base64 = get_img_as_base64(pilihan_kasus)
+                if img_base64:
+                    st.markdown(f"""
+                    <div class="banner-container">
+                        <img src="data:image/jpg;base64,{img_base64}" class="banner-image">
+                        <div class="banner-overlay">
+                            <div>
+                                <div class="banner-text">Diagnosis: {pilihan_kasus}</div>
+                                <div class="banner-subtext">AI Expert System with Active Learning</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                st.title(f"Diagnosis: {pilihan_kasus}")
-
-            st.subheader("📝 Observasi Gejala")
-            opsi_tampilan = [f"{row['nama_gejala']} ({row['id_gejala']})" for i, row in df_gejala.iterrows()]
-            mapping_gejala = {f"{row['nama_gejala']} ({row['id_gejala']})": row['id_gejala'] for i, row in df_gejala.iterrows()}
-            
-            input_pilihan = st.multiselect("Gejala yang ditemukan:", options=opsi_tampilan)
-            
-            if 'hasil' not in st.session_state: st.session_state['hasil'] = None
-
-            if st.button("🚀 ANALISIS SEKARANG", type="primary"):
-                if not input_pilihan:
-                    st.warning("⚠️ Pilih minimal satu gejala.")
+                    """, unsafe_allow_html=True)
                 else:
-                    user_ids = [mapping_gejala[x] for x in input_pilihan]
-                    with st.spinner('Sedang berpikir...'):
-                        time.sleep(0.5)
-                        hasil = hitung_similarity(user_ids, df_kasus, df_gejala)
-                    
-                    if len(hasil) > 0:
-                        top = hasil[0]
-                        try:
-                            sol_row = df_solusi[df_solusi['id_solusi'] == top['solusi_id']]
-                            sol_text = sol_row['nama_solusi'].values[0] if not sol_row.empty else "Solusi tidak ditemukan."
-                        except: sol_text = "Error data."
-                        
-                        st.session_state['hasil'] = {'top': top, 'input': input_pilihan, 'ids': user_ids, 'solusi': sol_text}
-                        catat_riwayat(pilihan_kasus, input_pilihan, sol_text, top['similarity'])
-                    else:
-                        st.error("Database Kosong!")
+                    st.title(f"Diagnosis: {pilihan_kasus}")
 
-            if st.session_state['hasil']:
-                res = st.session_state['hasil']
-                score = res['top']['similarity']
+                st.subheader("📝 Observasi Gejala")
+                opsi_tampilan = [f"{row['nama_gejala']} ({row['id_gejala']})" for i, row in df_gejala.iterrows()]
+                mapping_gejala = {f"{row['nama_gejala']} ({row['id_gejala']})": row['id_gejala'] for i, row in df_gejala.iterrows()}
                 
-                st.markdown("---")
-                c1, c2 = st.columns([1,4])
-                with c1:
-                    icon = "190411" if score >= 80 else "190406" if score >= 50 else "190407"
-                    st.image(f"https://cdn-icons-png.flaticon.com/512/190/{icon}.png")
-                with c2:
-                    st.subheader("Hasil Diagnosis")
-                    status = "Sangat Yakin" if score >= 80 else "Mungkin" if score >= 50 else "Tidak Tahu"
-                    color = "green" if score >= 80 else "orange" if score >= 50 else "red"
-                    st.markdown(f"Status: **:{color}[{status} ({score:.1f}%)]**")
-                    st.markdown(f"**Solusi:** \n### {res['solusi']}")
-                    st.caption(f"Ref Case: {res['top']['id_kasus']}")
+                input_pilihan = st.multiselect("Gejala yang ditemukan:", options=opsi_tampilan)
+                
+                if 'hasil' not in st.session_state: st.session_state['hasil'] = None
 
-                st.markdown("---")
-                with st.expander("⚠️ Jawaban Salah? Ajari Saya (Active Learning)"):
-                    list_sol = [f"{r['nama_solusi']} ({r['id_solusi']})" for i, r in df_solusi.iterrows()]
-                    map_sol = {f"{r['nama_solusi']} ({r['id_solusi']})": r['id_solusi'] for i, r in df_solusi.iterrows()}
-                    sol_benar = st.selectbox("Solusi Seharusnya:", options=list_sol)
-                    if st.button("💾 Simpan Pengetahuan Baru"):
-                        new_id = simpan_kasus_baru(pilihan_kasus, res['ids'], map_sol[sol_benar], df_kasus)
-                        if new_id:
-                            st.success(f"Terima kasih! Pengetahuan tersimpan (ID: {new_id})")
-                            time.sleep(1.5)
+                st.write("")
+                if st.button("🚀 ANALISIS SEKARANG", type="primary"):
+                    if not input_pilihan:
+                        st.warning("⚠️ Pilih minimal satu gejala.")
+                    else:
+                        user_ids = [mapping_gejala[x] for x in input_pilihan]
+                        with st.spinner('Sedang berpikir...'):
+                            time.sleep(0.5)
+                            hasil = hitung_similarity(user_ids, df_kasus, df_gejala)
+                        
+                        if len(hasil) > 0:
+                            top = hasil[0]
+                            try:
+                                sol_row = df_solusi[df_solusi['id_solusi'] == top['solusi_id']]
+                                sol_text = sol_row['nama_solusi'].values[0] if not sol_row.empty else "Solusi tidak ditemukan."
+                            except: sol_text = "Error data."
+                            
+                            st.session_state['hasil'] = {'top': top, 'input': input_pilihan, 'ids': user_ids, 'solusi': sol_text}
+                            catat_riwayat(pilihan_kasus, input_pilihan, sol_text, top['similarity'])
+                        else:
+                            st.error("Database Kosong!")
+
+                if st.session_state['hasil']:
+                    res = st.session_state['hasil']
+                    score = res['top']['similarity']
+                    
+                    st.markdown("---")
+                    c1, c2 = st.columns([1,4])
+                    with c1:
+                        icon = "190411" if score >= 80 else "190406" if score >= 50 else "190407"
+                        st.image(f"https://cdn-icons-png.flaticon.com/512/190/{icon}.png")
+                    with c2:
+                        st.subheader("Hasil Diagnosis")
+                        status = "Sangat Yakin" if score >= 80 else "Mungkin" if score >= 50 else "Tidak Tahu"
+                        color = "green" if score >= 80 else "orange" if score >= 50 else "red"
+                        st.markdown(f"Status: **:{color}[{status} ({score:.1f}%)]**")
+                        st.markdown(f"**Solusi:** \n### {res['solusi']}")
+                        st.caption(f"Ref Case: {res['top']['id_kasus']}")
+
+                    st.markdown("---")
+                    with st.expander("⚠️ Jawaban Salah? Ajari Saya (Active Learning)"):
+                        list_sol = [f"{r['nama_solusi']} ({r['id_solusi']})" for i, r in df_solusi.iterrows()]
+                        map_sol = {f"{r['nama_solusi']} ({r['id_solusi']})": r['id_solusi'] for i, r in df_solusi.iterrows()}
+                        sol_benar = st.selectbox("Solusi Seharusnya:", options=list_sol)
+                        if st.button("💾 Simpan Pengetahuan Baru"):
+                            new_id = simpan_kasus_baru(pilihan_kasus, res['ids'], map_sol[sol_benar], df_kasus)
+                            if new_id:
+                                st.success(f"Terima kasih! Pengetahuan tersimpan (ID: {new_id})")
+                                time.sleep(1.5)
+                                st.rerun()
+
+            elif menu == "Evaluasi (Admin)":
+                st.header("📊 Evaluation Dashboard")
+                if is_admin:
+                    if st.button("▶️ JALANKAN SELF-TESTING"):
+                        benar = 0
+                        total = len(df_kasus)
+                        logs = []
+                        bar = st.progress(0)
+                        for i, row in df_kasus.iterrows():
+                            test_ids = str(row['gejala_terkait']).split(',')
+                            res = hitung_similarity(test_ids, df_kasus, df_gejala)
+                            match = row['solusi_final'] == res[0]['solusi_id']
+                            if match: benar += 1
+                            logs.append({"ID": row['id_kasus'], "Real": row['solusi_final'], "Pred": res[0]['solusi_id'], "Match": "✅" if match else "❌"})
+                            time.sleep(0.01)
+                            bar.progress((i+1)/total)
+                        st.metric("Akurasi Model", f"{(benar/total)*100:.1f}%" if total > 0 else "0%")
+                        st.dataframe(pd.DataFrame(logs))
+                else: st.error("Akses Ditolak.")
+
+            elif menu == "Riwayat (Admin)":
+                st.header("📜 Riwayat Diagnosis")
+                if is_admin:
+                    hist_path = os.path.join(BASE_DIR, "data", "riwayat_diagnosis.csv")
+                    if os.path.exists(hist_path):
+                        st.dataframe(pd.read_csv(hist_path), use_container_width=True)
+                        if st.button("Hapus Riwayat"):
+                            os.remove(hist_path)
+                            st.success("Riwayat dihapus.")
                             st.rerun()
-
-        # === FITUR EVALUASI ===
-        elif menu == "Evaluasi (Admin)":
-            st.header("📊 Evaluation Dashboard")
-            if is_admin:
-                if st.button("▶️ JALANKAN SELF-TESTING"):
-                    benar = 0
-                    total = len(df_kasus)
-                    logs = []
-                    bar = st.progress(0)
-                    for i, row in df_kasus.iterrows():
-                        test_ids = str(row['gejala_terkait']).split(',')
-                        res = hitung_similarity(test_ids, df_kasus, df_gejala)
-                        match = row['solusi_final'] == res[0]['solusi_id']
-                        if match: benar += 1
-                        logs.append({"ID": row['id_kasus'], "Real": row['solusi_final'], "Pred": res[0]['solusi_id'], "Match": "✅" if match else "❌"})
-                        time.sleep(0.01)
-                        bar.progress((i+1)/total)
-                    st.metric("Akurasi Model", f"{(benar/total)*100:.1f}%" if total > 0 else "0%")
-                    st.dataframe(pd.DataFrame(logs))
-            else: st.error("Akses Ditolak.")
-
-        # === FITUR RIWAYAT ===
-        elif menu == "Riwayat (Admin)":
-            st.header("📜 Riwayat Diagnosis")
-            if is_admin:
-                hist_path = os.path.join(BASE_DIR, "data", "riwayat_diagnosis.csv")
-                if os.path.exists(hist_path):
-                    st.dataframe(pd.read_csv(hist_path), use_container_width=True)
-                    if st.button("Hapus Riwayat"):
-                        os.remove(hist_path)
-                        st.success("Riwayat dihapus.")
-                        st.rerun()
-                else: st.info("Belum ada riwayat.")
-            else: st.error("Akses Ditolak.")
+                    else: st.info("Belum ada riwayat.")
+                else: st.error("Akses Ditolak.")
     else:
         st.error("Critical: Data tidak ditemukan.")
 
 # =========================================================
-# MAIN ROUTER (PENGATUR HALAMAN)
+# MAIN ROUTER
 # =========================================================
 if 'page' not in st.session_state:
     st.session_state['page'] = 'landing'
