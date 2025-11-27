@@ -17,69 +17,98 @@ st.set_page_config(
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # KITA GABUNG CSS DI SINI BIAR RAPI
+# --- GANTI BAGIAN CSS DI APP.PY DENGAN INI ---
+
+# --- CSS MODERN & ELEGANT ---
 st.markdown("""
 <style>
-    /* =========================================
-       1. CSS UNTUK BACKGROUND GAMBAR SAMAR
-    ========================================= */
-    /* Target container utama Streamlit */
+    /* Reset & Dasar */
     .stApp {
-        /* Pastikan posisi relatif */
-        position: relative;
+        background-color: #0E1117; /* Dark Modern Background */
     }
-
-    /* Membuat lapisan "palsu" di belakang layar (pseudo-element) */
-    .stApp::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        
-        /* --- GANTI URL GAMBAR DI SINI --- */
-        /* Saya pakai contoh gambar sirkuit dari Unsplash */
-        background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-        /* -------------------------------- */
-
-        background-size: cover;      /* Gambar menutupi seluruh layar */
-        background-position: center; /* Gambar di tengah */
-        background-repeat: no-repeat;
-        background-attachment: fixed; /* Gambar diam saat di-scroll (opsional) */
-
-        /* --- ATUR TINGKAT KESAMARAN (OPACITY) DI SINI --- */
-        /* Nilai 0.0 (hilang) sampai 1.0 (jelas banget) */
-        opacity: 0.10; 
-        /* ----------------------------------------------- */
-
-        /* Taruh di paling belakang agar tidak menutupi konten */
-        z-index: -1;
-        /* Agar klik tembus ke belakang */
-        pointer-events: none;
-        /* Filter tambahan biar agak gelap/blur (opsional) */
-        filter: grayscale(100%) contrast(120%);
-    }
-
-    /* =========================================
-       2. CSS UNTUK LANDING PAGE
-    ========================================= */
-    .big-font {
-        font-size: 60px !important;
+    
+    /* 1. TYPOGRAPHY KEREN */
+    .hero-title {
+        font-size: 3.5rem !important;
         font-weight: 800;
-        background: -webkit-linear-gradient(#eee, #333);
+        background: linear-gradient(90deg, #FF4B4B, #FF914D);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         text-align: center;
-        margin-bottom: 0px;
-        /* Tambah shadow biar teks tetap terbaca di atas background */
-        text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+        margin-bottom: 10px;
+        letter-spacing: -1px;
     }
-    .sub-font {
-        font-size: 20px !important;
+    
+    .hero-subtitle {
+        font-size: 1.2rem !important;
+        font-weight: 400;
+        color: #B0B3B8;
         text-align: center;
-        color: #444; /* Warna agak digelapin dikit */
-        margin-bottom: 50px;
-        font-weight: 500;
+        margin-bottom: 40px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* 2. CARD FEATURES (Kotak-kotak Fitur) */
+    .feature-card {
+        background-color: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+    .feature-card:hover {
+        transform: translateY(-5px);
+        border-color: #FF4B4B;
+        background-color: rgba(255, 255, 255, 0.08);
+    }
+    .feature-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+    .feature-title {
+        font-weight: 700;
+        color: #FFF;
+        margin-bottom: 5px;
+    }
+    .feature-desc {
+        font-size: 0.9rem;
+        color: #888;
+    }
+
+    /* 3. TOMBOL START YANG LEBIH CLEAN */
+    .stButton>button {
+        background: linear-gradient(90deg, #FF4B4B, #C72F2F);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px; /* Tombol Bulat */
+        width: 100%;
+        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(255, 75, 75, 0.4);
+    }
+    .stButton>button:hover {
+        box-shadow: 0 6px 20px rgba(255, 75, 75, 0.6);
+        transform: scale(1.02);
+    }
+
+    /* 4. FOOTER MINIMALIS */
+    .footer-text {
+        text-align: center;
+        color: #555;
+        font-size: 0.8rem;
+        margin-top: 50px;
+        font-family: monospace;
+    }
+    
+    /* Hilangkan padding default yang bikin jarak aneh */
+    .block-container {
+        padding-top: 3rem;
+        padding-bottom: 2rem;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -88,7 +117,7 @@ st.markdown("""
 
 # --- HELPER FUNCTIONS ---
 def get_img_as_base64(kasus_type):
-    filename = "banner_laptop.jpg" if kasus_type == "Laptop" else "banner_cabai.jpg"
+    filename = "images/2banner_laptop.jpeg" if kasus_type == "Laptop" else "images/1banner_cabai.jpg"
     img_path = os.path.join(BASE_DIR, "images", filename)
     try:
         with open(img_path, "rb") as f:
@@ -200,27 +229,62 @@ def catat_riwayat(kasus_type, gejala_input, hasil_diagnosa, skor):
 # HALAMAN 1: LANDING PAGE
 # =========================================================
 def show_landing_page():
-    st.write("")
-    st.write("")
-    st.markdown('<p class="big-font">SISTEM PAKAR CERDAS</p>', unsafe_allow_html=True)
-    st.markdown('<p class="sub-font">Diagnosis Kerusakan Hardware & Penyakit Tanaman dengan Metode CBR + Active Learning</p>', unsafe_allow_html=True)
-    
-    st.write("---")
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        # Pakai container biar teks di dalamnya lebih jelas di atas background
-        with st.container(border=True):
-            st.info("👋 Selamat Datang! Silakan mulai aplikasi untuk melakukan diagnosis.")
-            if st.button("🚀 MULAI APLIKASI", type="primary", use_container_width=True):
-                st.session_state['page'] = 'app'
-                st.rerun()
-            
-    st.markdown("<br><br><br><br>", unsafe_allow_html=True)
-    # Footer dikasih background tipis biar kebaca
+    # --- HERO SECTION ---
+    st.markdown('<div class="hero-title">INTELLIGENT DIAGNOSIS SYSTEM</div>', unsafe_allow_html=True)
     st.markdown("""
-    <div style="text-align: center; color: #666; font-size: 12px; background-color: rgba(255,255,255,0.7); padding: 10px; border-radius: 5px;">
-    &copy; 2025 Mahasiswa IT - Tugas Besar Machine Learning<br>
-    Developed with ❤️ using Python & Streamlit
+    <div class="hero-subtitle">
+        Platform Sistem Pakar berbasis <b>Artificial Intelligence</b> untuk mendeteksi kerusakan hardware laptop 
+        dan penyakit tanaman cabai dengan akurasi tinggi dan kemampuan belajar mandiri.
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.write("") # Spacer
+
+    # --- FEATURES GRID (Biar Kelihatan Mahal) ---
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div class="feature-card">
+            <div class="feature-icon">🔍</div>
+            <div class="feature-title">Multi-Domain</div>
+            <div class="feature-desc">Mendukung diagnosis Hardware & Agrikultur dalam satu platform.</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with col2:
+        st.markdown("""
+        <div class="feature-card">
+            <div class="feature-icon">🧠</div>
+            <div class="feature-title">Active Learning</div>
+            <div class="feature-desc">Sistem semakin pintar dengan belajar dari input pengguna baru.</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with col3:
+        st.markdown("""
+        <div class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <div class="feature-title">Strict Logic</div>
+            <div class="feature-desc">Algoritma presisi tinggi dengan penalti untuk input yang tidak relevan.</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.write("")
+    st.write("")
+    st.write("")
+
+    # --- CALL TO ACTION (TOMBOL TENGAH) ---
+    c1, c2, c3 = st.columns([5, 3, 5])
+    with c2:
+        if st.button("MULAI DIAGNOSIS SEKARANG"):
+            st.session_state['page'] = 'app'
+            st.rerun()
+
+    # --- FOOTER ---
+    st.markdown("""
+    <div class="footer-text">
+        © 2025 COMPUTER SCIENCE DEPARTMENT • TUGAS BESAR MACHINE LEARNING v5.0
     </div>
     """, unsafe_allow_html=True)
 
