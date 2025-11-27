@@ -28,7 +28,7 @@ load_css("main.css")
 
 # --- HELPER FUNCTIONS ---
 def get_img_as_base64(kasus_type):
-    filename = "banner_laptop.jpg" if kasus_type == "Laptop" else "banner_cabai.jpg"
+    filename = "2banner_laptop.jpeg" if kasus_type == "Laptop" else "1banner_cabai.jpg"
     img_path = os.path.join(BASE_DIR, "images", filename)
     try:
         with open(img_path, "rb") as f:
