@@ -117,7 +117,7 @@ st.markdown("""
 
 # --- HELPER FUNCTIONS ---
 def get_img_as_base64(kasus_type):
-    filename = "images/2banner_laptop.jpeg" if kasus_type == "Laptop" else "images/1banner_cabai.jpg"
+    filename = "2banner_laptop.jpeg" if kasus_type == "Laptop" else "1banner_cabai.jpg"
     img_path = os.path.join(BASE_DIR, "images", filename)
     try:
         with open(img_path, "rb") as f:
@@ -328,18 +328,72 @@ def show_main_app():
         with st.container(border=True):
             if menu == "Diagnosis (User)":
                 img_base64 = get_img_as_base64(pilihan_kasus)
+                
+                # 2. Tentukan Sumber Gambar
                 if img_base64:
-                    st.markdown(f"""
-                    <div class="banner-container">
-                        <img src="data:image/jpg;base64,{img_base64}" class="banner-image">
-                        <div class="banner-overlay">
-                            <div>
-                                <div class="banner-text">Diagnosis: {pilihan_kasus}</div>
-                                <div class="banner-subtext">AI Expert System with Active Learning</div>
-                            </div>
-                        </div>
+                    image_src = f"data:image/jpg;base64,{img_base64}"
+                else:
+                    # Link Online (Unsplash) sebagai cadangan
+                    if pilihan_kasus == "Laptop":
+                        image_src = "https://images.unsplash.com/photo-1597424214155-37764c8c0d52?q=80&w=2070&auto=format&fit=crop"
+                    else:
+                        image_src = "https://images.unsplash.com/photo-1591485355790-6cb16cf6196f?q=80&w=2070&auto=format&fit=crop"
+
+                # 3. Render HTML + CSS langsung di sini
+                # Perhatikan tanda {{ dan }} di CSS itu WAJIB ada dua biar kebaca Python
+                st.markdown(f"""
+                <style>
+                    .custom-banner {{
+                        position: relative;
+                        width: 100%;
+                        height: 250px;
+                        border-radius: 12px;
+                        overflow: hidden;
+                        margin-bottom: 25px;
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                    }}
+                    .custom-banner img {{
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }}
+                    .custom-overlay {{
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        /* Gradasi Hitam Transparan ke Atas */
+                        background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: flex-end;
+                        padding: 30px;
+                    }}
+                    .custom-text {{
+                        color: white;
+                        font-size: 3rem;
+                        font-weight: 800;
+                        text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+                        margin: 0;
+                        line-height: 1.2;
+                    }}
+                    .custom-subtext {{
+                        color: #e0e0e0;
+                        font-size: 1.1rem;
+                        margin-top: 5px;
+                        font-weight: 400;
+                    }}
+                </style>
+
+                <div class="custom-banner">
+                    <img src="{image_src}">
+                    <div class="custom-overlay">
+                        <div class="custom-text">Diagnosis: {pilihan_kasus}</div>
+                        <div class="custom-subtext">AI Expert System with Active Learning</div>
                     </div>
-                    """, unsafe_allow_html=True)
+                </div>
+                """, unsafe_allow_html=True)
                 else:
                     st.title(f"Diagnosis: {pilihan_kasus}")
 
