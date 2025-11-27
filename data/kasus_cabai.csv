@@ -1,0 +1,7 @@
+id_kasus,gejala_terkait,solusi_final
+KC01,"C01,C02,C07",SC01
+KC02,"C03,C04",SC02
+KC03,"C05,C06",SC03
+KC04,"C01,C07",SC04
+KC05,"C06,C08",SC05
+KC06,"C03,C08",SC02

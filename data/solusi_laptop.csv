@@ -1,0 +1,13 @@
+id_solusi,nama_solusi
+S01,Cek adaptor/charger dan cek jalur kelistrikan motherboard (IC Power)
+S02,Lepas RAM bersihkan pin dengan penghapus atau ganti RAM baru
+S03,Cek keyboard (mungkin ada tombol terjepit) atau Cek BIOS baterai
+S04,Bongkar laptop bersihkan debu heatsink dan ganti Thermal Paste
+S05,Install ulang Driver VGA atau Cek kesehatan Harddisk (Bad Sector)
+S06,Backup data segera dan Ganti Harddisk/SSD baru
+S07,Ganti Baterai laptop baru atau Cek IC Charging
+S08,Install ulang Driver WiFi atau Ganti kartu WiFi Card (WLAN)
+S09,Bersihkan keyboard dari debu atau Ganti Keyboard Laptop baru
+S10,Cek tombol Fn (Function) untuk Touchpad atau Update Driver Touchpad
+S11,Upgrade RAM tambah kapasitas atau Ganti HDD ke SSD (Solid State Drive)
+S12,Ganti Speaker Laptop internal
